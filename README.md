@@ -1,10 +1,8 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/tan7bot/tan7bot/main/github-metrics.svg" alt="Metrics" width="100%">
+<img src="https://raw.githubusercontent.com/DavidMcCauley/DavidMcCauleyBot/blob/main/github-metrics.svg" alt="Metrics" width="100%">
   <img src="https://profile-readme-generator.com/assets/snake.svg" alt="Snake animation" width="100%" />
 </div>
-
+https://github.com/DavidMcCauley/DavidMcCauleyBot/blob/main/github-metrics.svg
 ---
 
-![](https://komarev.com/ghpvc/?username=tan7bot&style=for-the-badge)
-
-![](https://hit.yhype.me/github/profile?account_id=191672308)
+![](https://komarev.com/ghpvc/?username=DavidMcCauley&style=for-the-badge)

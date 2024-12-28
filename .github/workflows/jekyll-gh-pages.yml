@@ -24,18 +24,20 @@ concurrency:
 jobs:
   # Build job
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # Explicitly specify Ubuntu version for stability
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Setup Pages
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-      - name: Build with Jekyll
+        with:
+          enablement: true  # Ensures Pages is enabled if not already
+      - name: Build Jekyll Site
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./
-          destination: ./_site
-      - name: Upload artifact
+          source: ./  # Source directory for Jekyll files
+          destination: ./_site  # Output directory for the built site
+      - name: Upload Artifact for Deployment
         uses: actions/upload-pages-artifact@v3
 
   # Deployment job
@@ -43,7 +45,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # Explicitly specify Ubuntu version
     needs: build
     steps:
       - name: Deploy to GitHub Pages

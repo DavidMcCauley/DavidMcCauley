@@ -1,53 +1,56 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+name: Deploy Jekyll to GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  # Run on our own schedule (30 min after Metrics) so the deployed Pages
+  # site picks up the regenerated SVG. We avoid `workflow_run` chaining
+  # because it runs with default-branch secrets and is hard to use safely.
+  schedule:
+    - cron: "30 0,12 * * *"
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Read-only by default. Jobs that need writes opt in below.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Build job
   build:
-    runs-on: ubuntu-22.04  # Explicitly specify Ubuntu version for stability
+    name: Build Jekyll site
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
       - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true  # Ensures Pages is enabled if not already
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - name: Build Jekyll Site
-        uses: actions/jekyll-build-pages@v1
+        uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1
         with:
-          source: ./  # Source directory for Jekyll files
-          destination: ./_site  # Output directory for the built site
+          source: ./
+          destination: ./_site
       - name: Upload Artifact for Deployment
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
 
-  # Deployment job
   deploy:
+    name: Deploy to GitHub Pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-22.04  # Explicitly specify Ubuntu version
+    runs-on: ubuntu-24.04
     needs: build
+    # Scoped to the deploy job only (the build job does not need them).
+    permissions:
+      # required by actions/deploy-pages to publish the artifact
+      pages: write
+      # required by actions/deploy-pages for OIDC-based deployment auth
+      id-token: write
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

@@ -1,0 +1,41 @@
+name: Zizmor (Actions security audit)
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/**"
+      - ".github/zizmor.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/**"
+      - ".github/zizmor.yml"
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: zizmor-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  zizmor:
+    name: Static analysis
+    runs-on: ubuntu-24.04
+    permissions:
+      # required for actions/checkout to read the repository contents
+      contents: read
+      # required so zizmor can list workflow files via the Actions API
+      actions: read
+      # required to upload the SARIF result to GitHub code scanning
+      security-events: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          persist-credentials: false
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d # v0.5.6

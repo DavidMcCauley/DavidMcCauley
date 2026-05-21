@@ -1,39 +1,43 @@
-# Visit https://github.com/lowlighter/metrics#-documentation for full reference
 name: Metrics
+
 on:
-  # Schedule updates (every 12 hours in Central Time)
   schedule:
     - cron: "0 0,12 * * *"
-  # Allows manual workflow execution and triggers on commits to main branches
   workflow_dispatch:
   push:
     branches:
-      - "master"
       - "main"
+
+# Default to read-only; the job that pushes the regenerated SVG opts in below.
+permissions:
+  contents: read
+
+# Avoid overlapping runs that would race on the same commit.
+concurrency:
+  group: metrics-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   github-metrics:
-    runs-on: ubuntu-22.04  # Explicitly specifying Ubuntu version
+    name: Generate GitHub metrics SVG
+    runs-on: ubuntu-24.04
+    # Scoped to the metrics environment so METRICS_TOKEN can be migrated to
+    # an environment-scoped secret with deploy protection rules later.
+    environment: metrics
     permissions:
+      # required so lowlighter/metrics can commit the regenerated SVG to main
       contents: write
     steps:
-      - uses: lowlighter/metrics@latest
+      # lowlighter/metrics v3.34 pinned to commit SHA for supply-chain safety.
+      # Bump deliberately after reviewing diffs at https://github.com/lowlighter/metrics/releases
+      - uses: lowlighter/metrics@65836723097537a54cd8eb90f61839426b4266b6
         with:
-          # Your GitHub token
-          # The following scopes are required:
-          #  - public_access (default scope)
-          # The following additional scopes may be required:
-          #  - read:org      (for organization-related metrics)
-          #  - read:user     (for user-related data)
-          #  - read:packages (for some packages-related data)
-          #  - repo          (optional, if you want to include private repositories)
           token: ${{ secrets.METRICS_TOKEN }}
 
-          # Options
           user: DavidMcCauley
           template: classic
           base: header, activity, community, repositories, metadata
-          config_timezone: America/Chicago  # Updated timezone
+          config_timezone: America/Chicago
           plugin_achievements: yes
           plugin_achievements_display: detailed
           plugin_achievements_secrets: yes

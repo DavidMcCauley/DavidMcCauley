@@ -43,13 +43,19 @@ jobs:
           template: classic
           base: header, activity, community, repositories, metadata
           config_timezone: America/Chicago
-          # Surface plugin errors instead of silently rendering zeros — this is
-          # what was hiding the wrong stargazer/forker/watcher counts before.
+          # Explicit affiliations: without this, the paginated repositories
+          # query that feeds computed.repositories.stargazers/forks/watchers/
+          # releases can silently return empty nodes, which is why those four
+          # rendered as 0 even though the public API shows non-zero totals.
+          repositories_affiliations: owner
+          # Surface plugin errors instead of silently rendering zeros.
           plugins_errors_fatal: no
-          plugin_achievements: yes
-          plugin_achievements_display: detailed
-          plugin_achievements_secrets: yes
-          plugin_achievements_threshold: C
+          # plugin_achievements re-disabled: gh-metrics replaced the old
+          # Projects-classic query with one that hits user.projectsV2, which
+          # requires `read:project` scope on the PAT. METRICS_TOKEN does not
+          # have that scope, so the field returns undefined and the plugin
+          # crashes. To re-enable, add read:project to the PAT and uncomment.
+          plugin_achievements: no
           plugin_habits: yes
           plugin_habits_charts_type: classic
           plugin_habits_days: 14

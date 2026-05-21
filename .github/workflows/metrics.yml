@@ -50,6 +50,9 @@ jobs:
           repositories_affiliations: owner
           # Surface plugin errors instead of silently rendering zeros.
           plugins_errors_fatal: no
+          # Temporary: surface debug logging to diagnose 0 stargazer/forker/watcher counts.
+          debug: yes
+          verify: yes
           # plugin_achievements re-disabled: gh-metrics replaced the old
           # Projects-classic query with one that hits user.projectsV2, which
           # requires `read:project` scope on the PAT. METRICS_TOKEN does not

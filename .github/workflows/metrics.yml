@@ -28,9 +28,14 @@ jobs:
       # required so lowlighter/metrics can commit the regenerated SVG to main
       contents: write
     steps:
-      # lowlighter/metrics v3.34 pinned to commit SHA for supply-chain safety.
-      # Bump deliberately after reviewing diffs at https://github.com/lowlighter/metrics/releases
-      - uses: lowlighter/metrics@65836723097537a54cd8eb90f61839426b4266b6
+      # gh-metrics/metrics is a "maintenance mode" community fork of
+      # lowlighter/metrics that has fixed the achievements (Projects-classic
+      # deprecation) and habits (undefined commit.author) bugs, plus surfaces
+      # previously-silent plugin errors via plugins_errors_fatal.
+      # SHA-pinned for supply-chain safety; same Docker container architecture
+      # as upstream so the GitHub Actions node-runtime deprecation does not apply.
+      # Bump deliberately after reviewing diffs at https://github.com/gh-metrics/metrics/commits/master
+      - uses: gh-metrics/metrics@c726f0f9edfffb245f69a17e3e0acf3fd43e2a06
         with:
           token: ${{ secrets.METRICS_TOKEN }}
 
@@ -38,14 +43,20 @@ jobs:
           template: classic
           base: header, activity, community, repositories, metadata
           config_timezone: America/Chicago
-          # plugin_achievements disabled: the upstream GraphQL query references
-          # Projects (classic), which GitHub removed on 2024-05-23, so the whole
-          # query fails NOT_FOUND. The action is unmaintained and won't fix it.
-          plugin_achievements: no
-          # plugin_habits disabled: TypeError in upstream code destructuring
-          # `author` off a commit-event shape that GitHub has since changed.
-          # Same root cause class as achievements; not fixable on our side.
-          plugin_habits: no
+          # Surface plugin errors instead of silently rendering zeros — this is
+          # what was hiding the wrong stargazer/forker/watcher counts before.
+          plugins_errors_fatal: no
+          plugin_achievements: yes
+          plugin_achievements_display: detailed
+          plugin_achievements_secrets: yes
+          plugin_achievements_threshold: C
+          plugin_habits: yes
+          plugin_habits_charts_type: classic
+          plugin_habits_days: 14
+          plugin_habits_facts: yes
+          plugin_habits_from: 200
+          plugin_habits_languages_limit: 8
+          plugin_habits_languages_threshold: 0%
           plugin_isocalendar: yes
           plugin_isocalendar_duration: full-year
           plugin_languages: yes

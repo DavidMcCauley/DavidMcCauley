@@ -82,6 +82,14 @@ jobs:
           plugin_languages_recent_load: 300
           plugin_languages_sections: most-used
           plugin_languages_threshold: 0%
+          # Show percentages next to each language (default is no labels at all,
+          # which is what made the chart look like an unlabeled monochrome bar).
+          plugin_languages_details: percentage, lines, bytes-size
+          # Use git-blame line-attribution instead of GraphQL byte counts.
+          # GraphQL bytes can be wildly skewed by a single large .d.ts or
+          # generated file; indepth clones the repos and tallies actual
+          # authored lines, which better represents your real language mix.
+          plugin_languages_indepth: yes
           plugin_stargazers: yes
           plugin_stargazers_charts: yes
           plugin_stargazers_charts_type: classic

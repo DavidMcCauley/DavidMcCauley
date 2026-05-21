@@ -36,7 +36,10 @@ jobs:
         uses: stats-organization/github-readme-stats-action@8614f3a61601854731381d853f8566867754a5ca # v2.0.0
         with:
           card: stats
-          options: username=${{ github.repository_owner }}&show_icons=true&theme=github_dark&hide_border=true
+          # include_all_commits removes the last-year cap.
+          # count_private adds the publicly-exposed restrictedContributionsCount,
+          # which is what private commits surface as without requiring a PAT.
+          options: username=${{ github.repository_owner }}&show_icons=true&theme=github_dark&hide_border=true&include_all_commits=true&count_private=true
           path: profile/stats.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 

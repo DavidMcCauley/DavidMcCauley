@@ -4,6 +4,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    # Wait before opening PRs for a new release — defense against
+    # actions getting yanked or compromised shortly after publish.
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 3
     groups:
       actions-minor-patch:
         update-types: ["minor", "patch"]

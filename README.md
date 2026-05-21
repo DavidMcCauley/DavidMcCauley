@@ -1,4 +1,3 @@
 <div align="center">
-  <img src="./profile/stats.svg" alt="GitHub stats for DavidMcCauley">
-  <img src="./profile/top-langs.svg" alt="Top languages for DavidMcCauley">
+  <img src="./github-metrics.svg" alt="GitHub metrics for DavidMcCauley" width="100%">
 </div>

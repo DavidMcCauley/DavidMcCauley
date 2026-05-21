@@ -48,11 +48,14 @@ jobs:
           # releases can silently return empty nodes, which is why those four
           # rendered as 0 even though the public API shows non-zero totals.
           repositories_affiliations: owner
+          # Reduce the batch size: the default of 100 timed out on this account
+          # because the per-repo query fetches ~15 fields (releases, deployments,
+          # environments, 8 languages, multiple issue/PR counts, license, ...).
+          # When the first batch fails, the action's loop bails with 0 repos
+          # loaded, which is why every per-repo stat aggregated to 0.
+          repositories_batch: 25
           # Surface plugin errors instead of silently rendering zeros.
           plugins_errors_fatal: no
-          # Temporary: surface debug logging to diagnose 0 stargazer/forker/watcher counts.
-          debug: yes
-          verify: yes
           # plugin_achievements re-disabled: gh-metrics replaced the old
           # Projects-classic query with one that hits user.projectsV2, which
           # requires `read:project` scope on the PAT. METRICS_TOKEN does not

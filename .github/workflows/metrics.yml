@@ -54,6 +54,12 @@ jobs:
           # When the first batch fails, the action's loop bails with 0 repos
           # loaded, which is why every per-repo stat aggregated to 0.
           repositories_batch: 25
+          # Identities used when matching commit authors during indepth language
+          # analysis. The default is the GitHub login ("DavidMcCauley") which
+          # does not substring-match commits authored as "David McCauley"
+          # (space) or with the work/personal emails. Without this, the indepth
+          # analyzer filters out ~99% of the user's commits.
+          commits_authoring: DavidMcCauley, David McCauley, davidm6136, david.mccauley
           # Surface plugin errors instead of silently rendering zeros.
           plugins_errors_fatal: no
           # plugin_achievements re-disabled: gh-metrics replaced the old
@@ -72,8 +78,12 @@ jobs:
           plugin_isocalendar: yes
           plugin_isocalendar_duration: full-year
           plugin_languages: yes
-          plugin_languages_analysis_timeout: 15
-          plugin_languages_analysis_timeout_repositories: 7.5
+          # Timeouts in MINUTES. Budget ~8 min for languages (rest of the run
+          # is ~2 min Docker build + plugin work, staying inside the user's
+          # 10-min total tolerance). Per-repo cap kept tight so a single
+          # massive repo cannot monopolize the budget.
+          plugin_languages_analysis_timeout: 8
+          plugin_languages_analysis_timeout_repositories: 1.5
           plugin_languages_categories: markup, programming
           plugin_languages_colors: github
           plugin_languages_limit: 8

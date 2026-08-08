@@ -4,17 +4,48 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    # Wait before opening PRs for a new release — defense against
-    # actions getting yanked or compromised shortly after publish.
-    cooldown:
-      default-days: 7
-      semver-major-days: 14
-      semver-minor-days: 7
-      semver-patch-days: 3
-    groups:
-      actions-minor-patch:
-        update-types: ["minor", "patch"]
-    commit-message:
-      prefix: "ci"
-      include: "scope"
     open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        patterns:
+          - "*"
+        dependency-type: "development"
+    labels:
+      - "dependencies"
+      - "npm"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        patterns:
+          - "pytest*"
+          - "ruff"
+          - "mypy"
+          - "pre-commit"
+          - "coverage"
+        dependency-type: "development"
+    labels:
+      - "dependencies"
+      - "pip"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "docker"

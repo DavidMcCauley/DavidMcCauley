@@ -1,0 +1,16 @@
+# Redleaf Studio Enterprise actionlint configuration
+# Registers custom self-hosted runner labels so workflow static analysis
+# passes cleanly across enterprise CI and pre-commit lint gates.
+
+self-hosted-runner:
+  labels:
+    - self-hosted
+    - linux
+    - Linux
+    - x64
+    - X64
+    - macos
+    - macOS
+    - arm64
+    - ARM64
+    - docker
